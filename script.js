@@ -3,15 +3,17 @@ const generatePDF = async (name) => {
   const exBytes = await fetch("./Bonafide.pdf").then((res) =>
     res.arrayBuffer()
   );
-  const pngUrl =
-    "https://static.cdn.wisestamp.com/wp-content/uploads/2020/08/Oprah-Winfrey-Signature-1.png";
-  const pngImageBytes = await fetch(pngUrl).then((res) => res.arrayBuffer());
-  const pngImage = await pdfDoc.embedPng(pngImageBytes);
-  const pngDims = pngImage.scale(0.5);
+  //   const pngUrl =
+  //     "https://static.cdn.wisestamp.com/wp-content/uploads/2020/08/Oprah-Winfrey-Signature-1.png";
+  const pngImageBytes = await fetch("./sign.png").then((res) =>
+    res.arrayBuffer()
+  );
 
   const PDFDoc = await PDFDocument.load(exBytes);
   const pages = PDFDoc.getPages();
   const firstpg = pages[0];
+  const pngImage = await PDFDoc.embedPng(pngImageBytes);
+  const pngDims = pngImage.scale(0.5);
   firstpg.drawText(name, {
     x: 100,
     y: 190,
@@ -22,11 +24,11 @@ const generatePDF = async (name) => {
     y: 545,
     size: 15,
   });
-  page.drawImage(pngImage, {
-    x: 200,
-    y: 200,
-    width: pngDims.width,
-    height: pngDims.height,
+  firstpg.drawImage(pngImage, {
+    x: 380,
+    y: 300,
+    width: 100,
+    height: 100,
   });
   const uri = await PDFDoc.saveAsBase64({ dataUri: true });
   console.log("working");
